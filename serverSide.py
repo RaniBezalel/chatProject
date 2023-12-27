@@ -38,7 +38,6 @@ def manageClient(clientSocket):
         welcomeMessage = f"{clientUsername} has joined the chatroom"
         sendMessageToAllClients(welcomeMessage)
 
-        # receive data from the client
         while True:
             message = (clientSocket.recv(1024).decode("utf-8")).strip()
             response = f"({clientUsername}):{message}"
@@ -46,6 +45,7 @@ def manageClient(clientSocket):
             if (message.lower() == "exit"):
                 sendMessageToAllClients(f"{clientUsername} has now left the chatroom")
                 currentClients.remove(clientSocket)
+                clientSocket.close()
                 break
             
             sendMessageToAllClients(response)
