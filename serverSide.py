@@ -15,8 +15,9 @@ def serverInit():
         print(f"Socket error: {e}")
 
     while True:
-        clientSocket, _ = serverSocket.accept()
+        clientSocket, clientAddress = serverSocket.accept()
         currentClients.append(clientSocket)
+        print(f"Connection established from {clientAddress[0]}:{clientAddress[1]}")
 
         try:
             newThread = threading.Thread(target=manageClient, args=(clientSocket, ))
@@ -24,7 +25,6 @@ def serverInit():
 
         except threading.ThreadError as e:
             print(f"Thread error: {e}")
-
 
 def sendMessageToAllClients(response):
         for client in currentClients:

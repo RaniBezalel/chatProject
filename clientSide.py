@@ -11,18 +11,14 @@ def runClient():
     except socket.error as e:
         print(f"Socket error: {e}")
         sys.exit()
-    
-    connectionUsername = ""
-    while connectionUsername == "":
-        connectionUsername = input("Enter your name: ").strip()
 
-    clientSocket.send(connectionUsername.encode("utf-8"))
-    print(f"Hi {connectionUsername}, if you wish to leave write exit")
-    print("-------------------------------------")
+    clientUsername = handleUserConnection()
+    clientSocket.send(clientUsername.encode("utf-8"))
 
     operatingClient = True
 
     while operatingClient:
+        # constently check for new input or new messages from other clients
         currentSockets, _, _ = select.select([clientSocket, sys.stdin], [], [])
 
         for sock in currentSockets:
@@ -37,6 +33,16 @@ def runClient():
         else:
             serverResponse = (clientSocket.recv(1024)).decode("utf-8")
             print(serverResponse)
-       
+
+def handleUserConnection():
+    connectionUsername = ""
+    while connectionUsername == "":
+        connectionUsername = input("Enter your name: ").strip()
+    
+    print(f"Hi {connectionUsername}, if you wish to leave write exit")
+    print("-------------------------------------")
+
+    return connectionUsername
+
 if __name__ == '__main__':
      runClient()
